@@ -56,7 +56,7 @@ class ArticleController extends Controller
      */
     public function show($id)
     {
-        $article = Article::findOrFail($id); // Assicurati di trovare l'articolo con ID
+        $article = Article::findOrFail($id);
         return view('article.show', compact('article'));
     }
 
@@ -65,7 +65,7 @@ class ArticleController extends Controller
      */
     public function edit(Article $article)
     {
-        // Implementa l'edit se necessario
+        return view('article.edit', compact('article'));
     }
 
     /**
@@ -73,7 +73,19 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        // Implementa l'update se necessario
+        if ($request->file('img')) {
+            $img = $article->file('img')->store('public/img');
+        } else {
+            $img = $article->img;
+        }
+
+        $article->update([
+            'title' => $request->title,
+            'subtitle' => $request->subtitle,
+            'body' => $request->body,
+            'img' => $img
+        ]);
+        return redirect(route('article.index'))->with('message', 'articolo modificato');
     }
 
     /**
@@ -81,6 +93,7 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        // Implementa il destroy se necessario
+        $article->delete();
+        return redirect()->back()->with("messsage", "articolo eliminato");
     }
 }

@@ -9,6 +9,8 @@
         </div>
     </header>
 
+    <x-display-message></x-display-message>
+
     <div class="container mt-4">
         <div class="row">
             @foreach ($articles as $article)
@@ -20,7 +22,10 @@
                             <h5 class="card-title">{{ $article->title }}</h5>
                             <p class="card-text">{{ $article->subtitle }}</p>
                             <p class="card-subtitle">{{ $article->body }} </p>
-                            <a href="{{ route('article.show', $article->id) }}" class="btn btn-primary">Go somewhere</a>
+                            <a href="{{ route('article.show', $article->id) }}" class="btn btn-primary">Dettaglio articolo</a>
+                            <a href="{{ route('article.edit', $article->id) }}" class="btn btn-warning">Modifica articolo</a>
+                            <form action="{{ route('article.destroy', $article->id) }}" method="POST" > @csrf @method('DELETE')<button class="btn btn-danger" type="submit">Elimina articolo</button></form>
+
 
                         </div>
                     </div>
