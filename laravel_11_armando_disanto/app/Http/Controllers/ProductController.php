@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage; // Aggiungi questa riga
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
-
-
     public function create()
     {
         return view('product.create');
@@ -39,6 +38,7 @@ class ProductController extends Controller
             'description' => $request->description,
             'price' => $request->price,
             'img' => $imgPath, // Usa il percorso dell'immagine per salvarlo nel database
+            'user_id' => Auth::user()->id
         ]);
 
         return redirect()->route('product.index')->with('success', 'Prodotto creato con successo!');
