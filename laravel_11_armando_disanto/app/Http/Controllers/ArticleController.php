@@ -22,9 +22,7 @@ class ArticleController extends Controller
      */
     public function create()
     {
-
         $tags = Tag::all();
-
         return view('article.create', compact('tags'));
     }
 
@@ -52,8 +50,6 @@ class ArticleController extends Controller
             'img' => $imagePath,
         ]);
 
-
-
         $article->tags()->attach($request->tags);
 
         return redirect()->route('article.index')->with('message', 'Articolo inserito');
@@ -72,7 +68,6 @@ class ArticleController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(Article $article)
-
     {
         $tags = Tag::all();
         return view('article.edit', compact('article', 'tags'));
@@ -83,12 +78,16 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
+        // Controlla se è stata caricata una nuova immagine
         if ($request->file('img')) {
-            $img = $article->file('img')->store('public/img');
+            // Salva l'immagine e ottieni il percorso
+            $img = $request->file('img')->store('img', 'public');
         } else {
+            // Mantieni il percorso esistente se non è stata caricata un'immagine
             $img = $article->img;
         }
 
+        // Aggiorna l'articolo con i nuovi dati
         $article->update([
             'title' => $request->title,
             'subtitle' => $request->subtitle,
@@ -96,6 +95,7 @@ class ArticleController extends Controller
             'img' => $img
         ]);
 
+        // Sincronizza i tag associati all'articolo
         $article->tags()->sync($request->tags);
 
         return redirect(route('article.index'))->with('message', 'articolo modificato');
@@ -107,8 +107,7 @@ class ArticleController extends Controller
     public function destroy(Article $article)
     {
         $article->tags()->detach();
-
         $article->delete();
-        return redirect()->back()->with("messsage", "articolo eliminato");
+        return redirect()->back()->with("message", "articolo eliminato");
     }
 }
