@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tag;
 use App\Models\Article;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,10 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        return view('article.create');
+
+        $tags = Tag::all();
+
+        return view('article.create', compact('tags'));
     }
 
     /**
@@ -41,12 +45,16 @@ class ArticleController extends Controller
         $imagePath = $request->file('img')->store('images', 'public');
 
         // Creazione dell'articolo
-        Article::create([
+        $article = Article::create([
             'title' => $request->title,
             'subtitle' => $request->subtitle,
             'body' => $request->body,
             'img' => $imagePath,
         ]);
+
+
+
+        $article->tags()->attach($request->tags);
 
         return redirect()->route('article.index')->with('message', 'Articolo inserito');
     }
@@ -64,8 +72,10 @@ class ArticleController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(Article $article)
+
     {
-        return view('article.edit', compact('article'));
+        $tags = Tag::all();
+        return view('article.edit', compact('article', 'tags'));
     }
 
     /**
@@ -85,6 +95,9 @@ class ArticleController extends Controller
             'body' => $request->body,
             'img' => $img
         ]);
+
+        $article->tags()->sync($request->tags);
+
         return redirect(route('article.index'))->with('message', 'articolo modificato');
     }
 
@@ -93,6 +106,8 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
+        $article->tags()->detach();
+
         $article->delete();
         return redirect()->back()->with("messsage", "articolo eliminato");
     }

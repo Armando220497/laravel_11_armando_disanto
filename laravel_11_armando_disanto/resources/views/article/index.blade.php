@@ -22,9 +22,22 @@
                             <h5 class="card-title">{{ $article->title }}</h5>
                             <p class="card-text">{{ $article->subtitle }}</p>
                             <p class="card-subtitle">{{ $article->body }} </p>
-                            <a href="{{ route('article.show', $article->id) }}" class="btn btn-primary">Dettaglio articolo</a>
+
+                            @if(count($article->tags))
+                            <div class="mb-3">
+                                @foreach($article->tags as $tag)
+                            <span class="badge text-bg-primary">#{{$tag->name}}</span>
+                            @endforeach
+                        </div>
+                            @endif
+                            <a href="{{ route('article.show', $article->id) }}" class="btn btn-primary d-bloclk">Dettaglio articolo</a>
+                           
+                            @auth
+                                
                             <a href="{{ route('article.edit', $article->id) }}" class="btn btn-warning">Modifica articolo</a>
+                            
                             <form action="{{ route('article.destroy', $article->id) }}" method="POST" > @csrf @method('DELETE')<button class="btn btn-danger" type="submit">Elimina articolo</button></form>
+                            @endauth
 
 
                         </div>

@@ -3,7 +3,7 @@
         <div class="container h-100">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-6 d-flex justify-content-center mt-5">
-                    <h1 class="text-center">Articolo con id {{$article->id}}</h1>
+                    <h1 class="text-center">Articolo numero: {{$article->id}}</h1>
                 </div>
             </div>
         </div>
